@@ -5,7 +5,7 @@ Simple CGI server
 Wanted something quick to serve gitweb and figured I'd see how our grandparents made websites.
 
 ## How
-[node,js](https://nodejs.org)'s built-in tcp, http and child_process libraries.
+[node.js](https://nodejs.org)'s built-in tcp, http and child_process libraries.
 
 ## Example
 ``` shell
