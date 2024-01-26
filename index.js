@@ -63,6 +63,7 @@ server.on('connection', socket => {
 				socket.pipe(handler.stdin)
 				let output = ''
 				handler.stdout.on('data', d => output += d)
+				handler.stderr.on('data', d => console.error(d.toString()))
 				handler.on('exit', (code, err) => {
 					if (code !== 0) {
 						console.error('cgi: process exited nonzero:', code, err)
