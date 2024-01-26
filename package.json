@@ -1,0 +1,17 @@
+{
+	"name": "mini-cgi",
+	"version": "1.0.0",
+	"description": "Simple CGI server",
+	"type": "module",
+	"bin": {
+		"mini-cgi": "index.js"
+	},
+	"scripts": {
+		"example": "ROOT=example AUTO_INDEX=index.cgi node index.js"
+	},
+	"dependencies": {
+		"ecstatic": "^4.1.4"
+	},
+	"author": "jesse.tane@gmail.com",
+  "license": "MIT"
+}
