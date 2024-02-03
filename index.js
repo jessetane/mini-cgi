@@ -33,6 +33,9 @@ const server = net.Server()
 
 server.on('connection', socket => {
 	socket.setNoDelay(true)
+	socket.on('error', err => {
+		console.error('socket error:', err)
+	})
 	socket.once('data', firstPacket => {
 		const headers = firstPacket.toString('ascii')
 		let nl = headers.indexOf('\r\n\r\n') > -1 ? '\r\n' : '\n'
