@@ -77,7 +77,12 @@ server.on('connection', socket => {
 					const endOfHeaders = output.indexOf(nl + nl)
 					const headers = output.slice(0, endOfHeaders).split(nl)
 					const body = output.slice(endOfHeaders + nl.length * 2)
-					headers[0] = headers[0].replace(/^Status: (.*)/, 'HTTP/1.1 $1')
+					const statusMatcher = /^Status: (.*)/
+					if (headers[0].match(statusMatcher)) {
+						headers[0] = headers[0].replace(statusMatcher, 'HTTP/1.1 $1')
+					} else {
+						headers.unshift('HTTP/1.1 200 Ok')
+					}
 					// workaround for incorrect content-type
 					if (body.match(/^<\?xml/i)) {
 						headers.find((h, i) => {
