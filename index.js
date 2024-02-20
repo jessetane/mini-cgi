@@ -39,7 +39,7 @@ server.on('connection', socket => {
 	socket.once('data', firstPacket => {
 		const headers = firstPacket.toString('ascii')
 		let nl = headers.indexOf('\r\n\r\n') > -1 ? '\r\n' : '\n'
-		let [_, method, url] = headers.match(/([^\s]+?) ([^\s]+?) HTTP/)
+		let [_, method, url] = (headers.match(/([^\s]+?) ([^\s]+?) HTTP/) || [])
 		if (!url) {
 			console.error('strange request:', headers)
 			socket.end('HTTP/1.1 500 Server Error' + nl + nl + 'server error')
