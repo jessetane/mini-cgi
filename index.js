@@ -64,8 +64,8 @@ server.on('connection', socket => {
 					}
 				})
 				socket.pipe(handler.stdin)
-				let output = ''
-				handler.stdout.on('data', d => output += d)
+				let output = []
+				handler.stdout.on('data', d => output.push(d))
 				handler.stderr.on('data', d => console.error(d.toString()))
 				handler.on('exit', (code, err) => {
 					if (code !== 0) {
@@ -73,10 +73,12 @@ server.on('connection', socket => {
 						tryToSendServerError(err)
 						return
 					}
-					nl = output.indexOf('\r\n\r\n') > -1 ? '\r\n' : '\n'
-					const endOfHeaders = output.indexOf(nl + nl)
-					const headers = output.slice(0, endOfHeaders).split(nl)
-					const body = output.slice(endOfHeaders + nl.length * 2)
+					output = Buffer.concat(output)
+					const string = output.toString('ascii')
+					nl = string.indexOf('\r\n\r\n') > -1 ? '\r\n' : '\n'
+					const endOfHeaders = string.indexOf(nl + nl)
+					const headers = string.slice(0, endOfHeaders).split(nl)
+					const body = string.slice(endOfHeaders + nl.length * 2)
 					const statusMatcher = /^Status: (.*)/
 					if (headers[0].match(statusMatcher)) {
 						headers[0] = headers[0].replace(statusMatcher, 'HTTP/1.1 $1')
@@ -91,8 +93,8 @@ server.on('connection', socket => {
 							}
 						}) 
 					}
-					const response = headers.join(nl) + nl + nl + body
-					socket.end(response)
+					socket.write(headers.join(nl) + nl + nl)
+					socket.end(output.slice(endOfHeaders + nl.length * 2))
 				})
 				handler.on('error', err => {
 					console.error('cgi: process saw error', err)
